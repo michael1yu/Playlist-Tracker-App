@@ -7,8 +7,10 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import com.michaelyu.playlisttrackerapp.models.Playlist;
+import com.michaelyu.playlisttrackerapp.models.Song;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 public class PlaylistController {
@@ -30,16 +32,16 @@ public class PlaylistController {
 
         cursor.moveToFirst();
         Queue<Playlist> queue = new LinkedList<>();
-        for(int i = 0; i < cursor.getCount()-1; i++){
+        for(int i = 0; i < cursor.getCount(); i++){
             String name = cursor.getString(NAME_INDEX);
             int id = cursor.getInt(ID_INDEX);
             queue.add(new Playlist(name, id));
             Log.i("PLAYLIST", cursor.getString(NAME_INDEX));
             cursor.moveToNext();
         }
-
         while(!queue.isEmpty()){
-            SongController songController = new SongController(queue.poll(), context);
+            Playlist playlist = queue.poll();
+            SongController songController = new SongController(playlist, context);
             songController.traversePlaylist();
         }
         cursor.close();
